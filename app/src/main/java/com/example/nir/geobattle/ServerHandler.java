@@ -10,12 +10,13 @@ import java.net.Socket;
 
 public class ServerHandler implements Runnable {
 
-    public Socket socket = null;
+    private final static String SERVER_IP = "54.219.181.27";
+    private final String DEBUG = "GEO_DEBUG:ServerHandler";
+
     private ObjectOutputStream os;
     private ObjectInputStream is;
     private Battle battleContex;
-    private final static String SERVER_IP = "54.219.181.27";
-    private final String DEBUG = "GEO_DEBUG:ServerHandler";
+    public Socket socket = null;
 
     private GameData answer;
 
@@ -31,32 +32,45 @@ public class ServerHandler implements Runnable {
             is = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d(DEBUG, "Connection to server falied!");
+            String errorMsg = "Error opening connection to server.";
+            Log.d(DEBUG, errorMsg);
+            battleContex.returnMain(errorMsg);
+            return;
         }
         Log.i("ServerHandler", "Connected to server successfully");
 
-        GameData m = ConnectionUtils.readServer(is);
-        while (m != null) {
-            GameData.DataType type = m.getType();
-            if (type == GameData.DataType.QUESTION) {
-                Log.d(DEBUG, "run:question");
-                battleContex.updateTextView(battleContex.getmQuestion(), m.getContent());
-                Log.d(DEBUG, "run:waitUserInput");
-                waitUserInput();
-                Log.d(DEBUG, "run:waitUserInput finished");
-                ConnectionUtils.sendServer(os,answer);
-            }
-            if (type == GameData.DataType.ANSWER) {
-                System.out.println("got correct_answer from server :" + m.getContent());
-            }
-            if (type == GameData.DataType.UPDATE) {
-                System.out.println("server update :" + m.getContent());
-            }
-            m = ConnectionUtils.readServer(is);
+        try {
+            GameData m = ConnectionUtils.readServer(is);
+            while (m != null) {
+                GameData.DataType type = m.getType();
+                switch (type) {
+                    case QUESTION:
+                        battleContex.updateQuestion(m);
+                        waitUserInput();
+                        ConnectionUtils.sendServer(os, answer);
+                        break;
+                    case ANSWER:
+                        String answer = m.getContent("answer");
+                        battleContex.updatePreviousCorrectAnswer(answer);
+                        break;
+                    case UPDATE:
+                        String update = m.getContent("update");
+                        battleContex.updateGameScores(update);
+                        break;
+                    case SKIP:
+                        break;
+                    case FIN:
+                        //battleContex.showGameStatus()
+                        break;
+                }
+                m = ConnectionUtils.readServer(is);
 
+            }
+        }catch (IOException e ){
+            // TODO - replace with constant
+            battleContex.returnMain("Error connecting to server.");
         }
         ConnectionUtils.closeServerConnection(socket);
-
     }
 
     private void waitUserInput(){

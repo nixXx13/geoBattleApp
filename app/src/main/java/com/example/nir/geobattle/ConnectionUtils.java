@@ -12,21 +12,19 @@ public class ConnectionUtils {
 
     static void closeServerConnection(Socket socket){
         try {
+            System.out.println("=========== closeServerConnection: trying to close socket");
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static GameData readServer(ObjectInputStream is) {
+    public static GameData readServer(ObjectInputStream is) throws IOException {
         GameData m = null;
         Gson gson = new Gson();
         try {
             String s = (String) is.readObject();
             m = gson.fromJson(s, GameData.class);
-
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -34,13 +32,10 @@ public class ConnectionUtils {
 
     }
 
-    public static void sendServer(ObjectOutputStream os ,GameData data) {
+    public static void sendServer(ObjectOutputStream os ,GameData data) throws IOException {
         Gson gson = new Gson();
         String s = gson.toJson(data);
-        try {
-            os.writeObject(s);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        os.writeObject(s);
+
     }
 }

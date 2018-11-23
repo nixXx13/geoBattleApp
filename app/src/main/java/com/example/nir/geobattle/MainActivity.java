@@ -1,8 +1,6 @@
 package com.example.nir.geobattle;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,8 +16,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupSharedPreferences();
-
         final Button button_battle = (Button) findViewById(R.id.button_battle);
         button_battle.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -34,17 +30,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        GameData gameData = new GameData(GameData.DataType.ANSWER,"");
     }
 
-    public void updateQuestion ( String s ) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // Code to run on UI thread
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,13 +44,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
-    }
-
-    private void setupSharedPreferences(){
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-
     }
 
     private void FireIntent(Class cls){

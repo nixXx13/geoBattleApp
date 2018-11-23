@@ -55,4 +55,30 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6sp"
+        />
+    <TextView
+        android:id="@+id/tv_prev_correct_answer"
+        android:textSize="16sp"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6sp"
+        />
+    <TextView
+        android:id="@+id/tv_game_scores_status"
+        android:textSize="16sp"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        />
 </LinearLayout>
