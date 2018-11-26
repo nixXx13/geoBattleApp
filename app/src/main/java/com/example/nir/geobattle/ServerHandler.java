@@ -37,6 +37,9 @@ public class ServerHandler implements Runnable {
             battleContex.returnMain(errorMsg);
             return;
         }
+        battleContex.toggleProgressBar(false);
+        battleContex.updateInfoLabel("Welcome to another geoBattle");
+        battleContex.setGameDisplay();
         Log.i("ServerHandler", "Connected to server successfully");
 
         try {
@@ -51,32 +54,49 @@ public class ServerHandler implements Runnable {
                         break;
                     case ANSWER:
                         String answer = m.getContent("answer");
-                        battleContex.updatePreviousCorrectAnswer(answer);
+                        battleContex.markCorrectAnswer(answer);
                         break;
                     case UPDATE:
                         String update = m.getContent("update");
-                        battleContex.updateGameScores(update);
+                        battleContex.updateInfoLabel(update);
                         break;
                     case SKIP:
                         break;
                     case FIN:
-                        //battleContex.showGameStatus()
-                        break;
+                        // game has ended
+                        ConnectionUtils.sendServer(os, new GameData(GameData.DataType.FIN));
+                        String summary = m.getContent("summary");
+                        terminate();
+                        // TODO - update gui that game ended
+                        battleContex.returnMain("Game ended");
+                        return;
                 }
                 m = ConnectionUtils.readServer(is);
 
             }
         }catch (IOException e ){
             // TODO - replace with constant
+            e.printStackTrace();
             battleContex.returnMain("Error connecting to server.");
         }
-        ConnectionUtils.closeServerConnection(socket);
+        finally {
+            terminate();
+        }
     }
 
     private void waitUserInput(){
+        int timeout = 5;
         synchronized (this){
             try {
-                wait();     // can place timeout here
+//                while (timeout > 0){
+//                    GameData tempAnswer = new GameData(GameData.DataType.ANSWER);
+//                    tempAnswer.setContent("answer","-1");
+//                    setAnswer(tempAnswer);
+//                    battleContex.updateInfoLabel(timeout + " seconds to answer!");
+//                    wait(1000);     // can place timeout here
+//                    timeout--;
+//                }
+                wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -87,5 +107,21 @@ public class ServerHandler implements Runnable {
         this.answer = answer;
     }
 
+    public void terminate(){
+        // TODO - should be in connectionUtils??
+        try {
+            System.out.println("=========== closeServerConnection: trying to close os");
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            System.out.println("=========== closeServerConnection: trying to close is");
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ConnectionUtils.closeServerConnection(socket);
+    }
 
 }
