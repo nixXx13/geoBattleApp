@@ -10,17 +10,22 @@ import java.net.Socket;
 
 public class ServerHandler implements Runnable {
 
+    private final static String TAG = "ServerHandler";
+    private final static boolean TIME_ATTACK = true;
     private final static String SERVER_IP = "54.219.181.27";
-    private final String DEBUG = "GEO_DEBUG:ServerHandler";
+
+    public ObjectOutputStream getOs() {
+        return os;
+    }
 
     private ObjectOutputStream os;
     private ObjectInputStream is;
     private Battle battleContex;
-    public Socket socket = null;
+    private Socket socket = null;
 
     private GameData answer;
 
-    public ServerHandler(Battle battleContex) {
+    ServerHandler(Battle battleContex) {
         this.battleContex = battleContex;
     }
 
@@ -32,17 +37,21 @@ public class ServerHandler implements Runnable {
             is = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
-            String errorMsg = "Error opening connection to server.";
-            Log.d(DEBUG, errorMsg);
+            String errorMsg = "run: Error opening connection to server.";
+            Log.e(TAG, errorMsg);
             battleContex.returnMain(errorMsg);
             return;
         }
+        battleContex.toggleProgressBar(false);
+        battleContex.updateInfo("Welcome to another geoBattle");
+        battleContex.setGameDisplay();
         Log.i("ServerHandler", "Connected to server successfully");
 
         try {
             GameData m = ConnectionUtils.readServer(is);
             while (m != null) {
                 GameData.DataType type = m.getType();
+                Log.d(TAG, "run: received gameData from server" + m.toString());
                 switch (type) {
                     case QUESTION:
                         battleContex.updateQuestion(m);
@@ -51,33 +60,60 @@ public class ServerHandler implements Runnable {
                         break;
                     case ANSWER:
                         String answer = m.getContent("answer");
-                        battleContex.updatePreviousCorrectAnswer(answer);
+                        battleContex.markCorrectAnswer(answer);
                         break;
                     case UPDATE:
                         String update = m.getContent("update");
-                        battleContex.updateGameScores(update);
+                        battleContex.updateScores(update);
                         break;
                     case SKIP:
                         break;
                     case FIN:
-                        //battleContex.showGameStatus()
-                        break;
+                        // game has ended
+                        ConnectionUtils.sendServer(os, new GameData(GameData.DataType.FIN));
+                        // TODO - update gui that game ended
+                        String summary = m.getContent("summary");
+                        battleContex.returnMain("Game ended");
+                        return;
                 }
                 m = ConnectionUtils.readServer(is);
 
             }
         }catch (IOException e ){
-            // TODO - replace with constant
+            Log.e(TAG, "run: Game loop exited with exception");
+            e.printStackTrace();
             battleContex.returnMain("Error connecting to server.");
         }
-        ConnectionUtils.closeServerConnection(socket);
+        finally {
+            Log.d(TAG, "run: calling terminate to close socket and streams");
+            terminate();
+        }
     }
 
     private void waitUserInput(){
         synchronized (this){
             try {
-                wait();     // can place timeout here
+                Log.d(TAG, "waitUserInput: waiting for user input");
+                if (TIME_ATTACK) {
+                    int timeout = 10;
+                    // prepare blank answer to be sent
+                    GameData blankAnswer = new GameData(GameData.DataType.ANSWER);
+                    blankAnswer.setContent("answer", "-1");
+                    setAnswer(blankAnswer);
+                    while (timeout > 0) {
+                        battleContex.updateInfo((timeout+1)/2 + " seconds to answer!");
+                        wait(500);
+                        timeout--;
+                        if (!answer.getContent("answer").equals("-1")){
+                            return;
+                        }
+                    }
+                }
+                else{
+                    wait();
+                }
             } catch (InterruptedException e) {
+                Log.e(TAG, "waitUserInput: error waiting for user input");
                 e.printStackTrace();
             }
         }
@@ -87,5 +123,12 @@ public class ServerHandler implements Runnable {
         this.answer = answer;
     }
 
+    public void terminate(){
+        Log.d(TAG, "terminate: trying to close output stream");
+        ConnectionUtils.closeStream(os);
+        Log.d(TAG, "terminate: trying to close input stream");
+        ConnectionUtils.closeStream(is);
+        ConnectionUtils.closeSocket(socket);
+    }
 
 }

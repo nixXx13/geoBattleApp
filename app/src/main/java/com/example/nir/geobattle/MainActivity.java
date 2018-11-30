@@ -7,31 +7,41 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+
+    Button bt_battle;
+    Button bt_stats;
+
+    Animation an_fromBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button button_battle = (Button) findViewById(R.id.button_battle);
-        button_battle.setOnClickListener(new View.OnClickListener() {
+        bt_battle = (Button) findViewById(R.id.button_battle);
+        bt_battle.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("=====", "onClick: battle clicked!");
                 FireIntent(Battle.class);
             }
         });
-        final Button button_previous_scores = (Button) findViewById(R.id.button_previous_scores);
-        button_previous_scores.setOnClickListener(new View.OnClickListener() {
+        bt_stats = (Button) findViewById(R.id.stats);
+        bt_stats.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("=====", "onClick: previous scores clicked!");
             }
         });
 
-    }
+        an_fromBottom = AnimationUtils.loadAnimation(this,R.anim.frombottom);
+        bt_battle.setAnimation(an_fromBottom);
+        bt_stats.setAnimation(an_fromBottom);
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

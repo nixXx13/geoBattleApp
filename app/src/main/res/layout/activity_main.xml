@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:paddingTop="48sp"
+    android:background="@drawable/gb"
     >
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="70sp"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,33 +24,43 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_gravity="center_vertical|center_horizontal"
         android:textSize="48sp"
+        android:visibility="invisible"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="6sp"
+        android:padding="80sp"
         />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200sp"
+        android:layout_height="50sp"
         android:id="@+id/button_battle"
         android:textSize="22sp"
         android:text="@string/button_battle"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/roundbutton"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="6sp"
+        android:padding="3sp"
         />
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button_previous_scores"
+
+        android:id="@+id/stats"
+        android:text="@string/stats"
+        android:layout_gravity="center_horizontal"
         android:textSize="22sp"
-        android:text="@string/button_previous_scores"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:textColor="#FFFFFF"
+        android:layout_width="200sp"
+        android:layout_height="50sp"
+        android:background="@drawable/roundbutton"
+        android:textAllCaps="false"
+
         />
 
-</android.support.v7.widget.LinearLayoutCompat>
+</LinearLayout>
