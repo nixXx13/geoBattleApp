@@ -6,89 +6,257 @@
     android:layout_height="match_parent"
     tools:context=".Battle"
     android:orientation="vertical"
+    android:background="@drawable/gb_game"
     >
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="70sp"
-        />
-    <ProgressBar
-        android:id="@+id/pbHeaderProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="2" />
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
 
     <TextView
         android:id="@+id/tv_battle_question"
-        android:textSize="22sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
         android:text="@string/battle_question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        />
+        android:gravity="center"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:textSize="24sp" />
+
     <TextView
+        android:id="@+id/tv_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="6sp"
-        />
-    <Button
-        android:id="@+id/bt_battle_op1"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:text="Connecting to server..."
         android:textSize="16sp"
-        android:text="opt1"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:textColor="#FFFFFF"
-        android:layout_width="200sp"
-        android:layout_height="50sp"
-        android:background="@drawable/colortransition"
-        android:textAllCaps="false"
         />
-    <TextView
+
+    <ProgressBar
+        android:id="@+id/pbHeaderProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="3sp"
-        />
-    <Button
-        android:id="@+id/bt_battle_op2"
-        android:textSize="16sp"
-        android:text="opt2"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:textColor="#FFFFFF"
-        android:layout_width="200sp"
-        android:layout_height="50sp"
-        android:background="@drawable/colortransition"
-        android:textAllCaps="false"
-        />
-    <TextView
-        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="2" />
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="3sp"
-        />
-    <TextView
-        android:id="@+id/tv_prev_correct_answer"
-        android:textSize="16sp"
-        android:text=""
-        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        >
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="50dp"
+            android:padding="2dp" />
+        <Button
+            android:id="@+id/bt_battle_op1"
+            android:layout_width="150sp"
+            android:layout_height="50sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/colortransition"
+            android:text="opt1"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="50dp"
+            android:padding="2dp" />
+
+        <Button
+            android:id="@+id/bt_battle_op2"
+            android:layout_width="150dp"
+            android:layout_height="50sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/colortransition"
+            android:text="opt2"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="50dp"
+            android:padding="2dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        />
-    <TextView
-        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        >
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="50dp"
+            android:padding="2dp" />
+        <Button
+            android:id="@+id/bt_battle_op3"
+            android:layout_width="200sp"
+            android:layout_height="50sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@drawable/colortransition"
+            android:text="opt3"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="50dp"
+            android:padding="2dp" />
+
+        <Button
+            android:id="@+id/bt_battle_op4"
+            android:textSize="16sp"
+            android:text="opt4"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textColor="#FFFFFF"
+            android:layout_width="200sp"
+            android:layout_height="50sp"
+            android:background="@drawable/colortransition"
+            android:textAllCaps="false"
+            />
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="50dp"
+            android:padding="2dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/extras"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="3sp"
-        />
-    <TextView
-        android:id="@+id/tv_game_scores_status"
-        android:textSize="22sp"
-        android:text=""
-        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:weightSum="7">
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/extra1"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/colortransition"
+            android:text="Skip"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/extra2"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/colortransition"
+            android:text="X2"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/extra3"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/colortransition"
+            android:text="D2"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/scoresLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        />
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        >
+        <TextView
+            android:id="@+id/tv_pScore3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player3:\n0"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_pScore1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player1:\n0"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_pScore2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player2:\n0"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_pScore4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player4:\n0"
+            android:textSize="16sp" />
+    </LinearLayout>
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="3sp"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
 </LinearLayout>

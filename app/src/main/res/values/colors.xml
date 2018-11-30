@@ -6,5 +6,6 @@
     <color name="colorButtonNormal">#FFC125</color>
     <color name="colorControlHighlight">#FF4081</color>
     <color name="colorAnswerGrey">#D1D1D1</color>
+    <color name="white">#FFFFFF</color>
 
 </resources>

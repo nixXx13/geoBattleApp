@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
+    android:background="@drawable/gb"
     >
 
     <TextView
@@ -23,6 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_gravity="center_vertical|center_horizontal"
         android:textSize="48sp"
+        android:visibility="invisible"
         />
     <TextView
         android:layout_width="wrap_content"
