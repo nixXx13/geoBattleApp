@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BattleConfig"
+    android:background="@drawable/gb_conf"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <LinearLayout
+        android:id="@+id/playerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:weightSum="4"
+
+        >
+
+        <TextView
+            android:id="@+id/tv_player_name"
+            android:layout_width="160sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="Player name"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_player_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Pick your name"
+            android:inputType="text"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666660"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/roomName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:layout_gravity="center_vertical"
+
+        >
+
+        <TextView
+            android:id="@+id/tv_room_name"
+            android:layout_width="160sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="Room name"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+    <EditText
+        android:hint="Room name to create/join"
+        android:textColorHint="#666660"
+        android:inputType="text"
+        android:id="@+id/et_room_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:textSize="12sp"
+        android:textColor="#FFFFFF"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/roomPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+
+        >
+
+        <TextView
+            android:id="@+id/tv_room_pass"
+            android:layout_width="160sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="Room password"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_room_pass"
+            android:inputType="text"
+            android:hint="Password for private rooms"
+            android:textColorHint="#666660"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_room_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:text="Create new room or join existing one"
+        android:gravity="center"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:visibility="invisible"
+        />
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:gravity="center"
+        >
+
+        <Button
+            android:id="@+id/bt_join"
+            android:layout_width="50sp"
+            android:layout_height="40sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:background="@drawable/halfleftroundbutton"
+            android:text="Join"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/bt_create"
+            android:layout_width="50dp"
+            android:layout_height="40sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:background="@drawable/halfrightroundbutton"
+            android:text="Create"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/roomSizeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:weightSum="4"
+
+        >
+
+        <TextView
+            android:id="@+id/tv_room_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:text="Number of players in room"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/roomSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:gravity="center"
+        >
+        <Button
+            android:id="@+id/bt_battle_size2"
+            android:layout_width="50sp"
+            android:layout_height="40sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:background="@drawable/halfleftroundbutton"
+            android:text="2"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:alpha="1"/>
+
+        <Button
+            android:id="@+id/bt_battle_size3"
+            android:layout_width="50sp"
+            android:layout_height="40sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:background="@drawable/squarebutton"
+            android:text="3"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:alpha="1"/>
+
+        <Button
+            android:id="@+id/bt_battle_size4"
+            android:layout_width="50sp"
+            android:layout_height="40sp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@drawable/halfrightroundbutton"
+            android:text="4"
+            android:layout_weight="0.5"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:alpha="1"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
+    <Button
+        android:id="@+id/play"
+        android:layout_marginTop="40dp"
+        android:layout_width="100sp"
+        android:layout_height="40sp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:background="@drawable/colortransition"
+        android:text="Play!"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+
+        android:padding="2dp"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+
+
+</LinearLayout>
