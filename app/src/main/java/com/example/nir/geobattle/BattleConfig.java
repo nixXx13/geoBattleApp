@@ -117,8 +117,10 @@ public class BattleConfig extends AppCompatActivity {
                 type = buttonText.toLowerCase();
             }
             else {
-                setButtonsDisplay(buttonText);
-                roomSize = Integer.valueOf((String) button.getText());
+                if (type.equals("create")) {
+                    setButtonsDisplay(buttonText);
+                    roomSize = Integer.valueOf((String) button.getText());
+                }
             }
         }
     }

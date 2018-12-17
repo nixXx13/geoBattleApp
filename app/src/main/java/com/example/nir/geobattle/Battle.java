@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Battle extends AppCompatActivity {
 
@@ -31,6 +32,8 @@ public class Battle extends AppCompatActivity {
 
     private ProgressBar pbHeaderProgress;
     private UIHandler   uiHandler;
+
+    private List<Button> LastCorrect;
 
     public enum GameStage{
         CONNECTED,
@@ -84,9 +87,11 @@ public class Battle extends AppCompatActivity {
         mButtonOpt[2] = (Button)findViewById(R.id.bt_battle_op3);
         mButtonOpt[3] = (Button)findViewById(R.id.bt_battle_op4);
 
+        LastCorrect = new ArrayList<>();
         for ( int i = 0 ; i < NUM_BUTTONS ; i++){
             mButtonOpt[i].setOnClickListener(new ButtonListener(mButtonOpt[i]));
             mButtonOpt[i].setVisibility(View.INVISIBLE);
+            LastCorrect.add(mButtonOpt[i]);
         }
 
         mExtras = new Button[NUM_EXTRAS];
@@ -143,7 +148,6 @@ public class Battle extends AppCompatActivity {
             }
         }
         if (gameStage.equals(GameStage.CONNECTED)) {
-            updateInfo("Welcome to another geoBattle");
             toggleProgressBar(false);
             updateInfo("Waiting for other players...");
             for (int i = 0; i < NUM_BUTTONS; i++) {
@@ -191,8 +195,10 @@ public class Battle extends AppCompatActivity {
         for ( int i = 0 ; i < NUM_BUTTONS ; i++){
             uiHandler.setViewVisability(mButtonOpt[i],View.VISIBLE);
             uiHandler.updateTextView(mButtonOpt[i], pAnswer.get(i));
-            mButtonOpt[i].getBackground().setAlpha(255);
-//            uiHandler.setViewBackground(getBaseContext(),mButtonOpt[i],R.drawable.roundbutton);     // TODO - does it have to be base context? - https://stackoverflow.com/questions/10347184/difference-and-when-to-use-getapplication-getapplicationcontext-getbasecon
+            if ( i != NUM_BUTTONS-1 ){
+                //last is correct , no need to animate
+                uiHandler.alpha(LastCorrect.get(i),0.2f,1.0f);
+            }
         }
     }
 
@@ -202,12 +208,18 @@ public class Battle extends AppCompatActivity {
     }
 
     public void markCorrectAnswer(final String correctAnswer){
+        int correctIndex = 0;
         for ( int i = 0 ; i < NUM_BUTTONS ; i++){
-            if (!mButtonOpt[i].getText().equals(correctAnswer)) {
-//                uiHandler.setViewBackground(getBaseContext(),mButtonOpt[i], R.drawable.roundbuttongrayed);
-                uiHandler.alpha(mButtonOpt[i],1.0f,0.2f);
+            if (!LastCorrect.get(i).getText().equals(correctAnswer)) {
+                uiHandler.alpha(LastCorrect.get(i),1.0f,0.2f);
+            }
+            else{
+               correctIndex = i;
             }
         }
+        Button correctButton = LastCorrect.get(correctIndex);
+        LastCorrect.remove(correctIndex);
+        LastCorrect.add(correctButton);
     }
 
     public void notifyServerHandler(){
@@ -230,7 +242,6 @@ public class Battle extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            // TODO - set buttom pressed color
             String answer = (String)button.getText();
             GameData answerResponse = new GameData(GameData.DataType.ANSWER);
             answerResponse.setContent("answer",answer);

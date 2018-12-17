@@ -11,7 +11,7 @@ import java.net.Socket;
 public class ServerHandler implements Runnable {
 
     private final static String TAG = "ServerHandler";
-    private final static boolean TIME_ATTACK = false;
+    private final static boolean TIME_ATTACK = true;
     private final static String SERVER_IP = "54.219.181.27";
 
 
@@ -23,6 +23,9 @@ public class ServerHandler implements Runnable {
     private GameData answer;
 
     private GameData dataConnection;
+
+    private double timeCoefficient = 10;
+    private final static double DECREASE_FACTOR = 0.1;
 
     ServerHandler(Battle battleContex,String playerName,String roomName,String type,String roomPassword,int roomSize) {
         this.battleContex = battleContex;
@@ -63,11 +66,13 @@ public class ServerHandler implements Runnable {
                 Log.d(TAG, "run: received gameData from server" + m.toString());
                 switch (type) {
                     case QUESTION:
+                        battleContex.updateInfo("Your turn!");
                         battleContex.updateQuestion(m);
                         waitUserInput();
                         sendServer(answer);
                         break;
                     case ANSWER:
+                        battleContex.updateInfo("Rivals turn");
                         String answer = m.getContent("answer");
                         battleContex.markCorrectAnswer(answer);
                         break;
@@ -115,15 +120,15 @@ public class ServerHandler implements Runnable {
             try {
                 Log.d(TAG, "waitUserInput: waiting for user input");
                 if (TIME_ATTACK) {
-                    int timeout = 10;
+                    timeCoefficient = 10;
                     // prepare blank answer to be sent
                     GameData blankAnswer = new GameData(GameData.DataType.ANSWER);
                     blankAnswer.setContent("answer", "-1");
                     setAnswer(blankAnswer);
-                    while (timeout > 0) {
-                        battleContex.updateInfo((timeout+1)/2 + " seconds to answer!");
-                        wait(500);
-                        timeout--;
+                    while (timeCoefficient > 0) {
+                        battleContex.updateInfo(timeCoefficient+ " seconds to answer!");
+                        wait(100);
+                        timeCoefficient = Math.round((timeCoefficient - DECREASE_FACTOR)* 10d) / 10d;
                         if (!answer.getContent("answer").equals("-1")){
                             return;
                         }
@@ -140,6 +145,7 @@ public class ServerHandler implements Runnable {
     }
 
     public void setAnswer(GameData answer) {
+        answer.setContent("timeCoeffient",String.valueOf(this.timeCoefficient));
         this.answer = answer;
     }
 

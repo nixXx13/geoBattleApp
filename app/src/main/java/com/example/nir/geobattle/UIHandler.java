@@ -50,11 +50,18 @@ public class UIHandler {
         });
     }
 
-    public void alpha(View v , float startAlpha , float finishAlpha ){
-        AlphaAnimation animation = new AlphaAnimation(startAlpha, finishAlpha);
-        animation.setDuration(250);
-        animation.setFillAfter(true);
-        v.startAnimation(animation);
+    public void alpha(final View v , final float startAlpha , final float finishAlpha ){
+
+        mHandler.post(new Runnable() {
+            public void run() {
+                AlphaAnimation animation = new AlphaAnimation(startAlpha, finishAlpha);
+                animation.setDuration(250);
+                animation.setFillAfter(true);
+                v.startAnimation(animation);
+            }
+        });
+
+
     }
 
 }
