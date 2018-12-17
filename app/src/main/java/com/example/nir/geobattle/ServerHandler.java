@@ -14,19 +14,30 @@ public class ServerHandler implements Runnable {
     private final static boolean TIME_ATTACK = true;
     private final static String SERVER_IP = "54.219.181.27";
 
-    public ObjectOutputStream getOs() {
-        return os;
-    }
 
-    private ObjectOutputStream os;
-    private ObjectInputStream is;
-    private Battle battleContex;
-    private Socket socket = null;
+    private ObjectOutputStream  os;
+    private ObjectInputStream   is;
+    private Battle              battleContex;
+    private Socket              socket = null;
 
     private GameData answer;
 
-    ServerHandler(Battle battleContex) {
+    private GameData dataConnection;
+
+    private double timeCoefficient = 10;
+    private final static double DECREASE_FACTOR = 0.1;
+
+    ServerHandler(Battle battleContex,String playerName,String roomName,String type,String roomPassword,int roomSize) {
         this.battleContex = battleContex;
+
+        dataConnection = new GameData(GameData.DataType.UPDATE);
+        dataConnection.setContent("name"            , playerName);
+        dataConnection.setContent("roomName"        , roomName );
+        dataConnection.setContent("type"            , type );
+        dataConnection.setContent("roomPassword"    , roomPassword);
+        dataConnection.setContent("roomSize"        , ""+roomSize);
+        Log.d(TAG, "ServerHandler: created instance with" + playerName + ":" + roomName+ ":" +
+                type+ ":" + roomPassword+ ":" + roomSize);
     }
 
     @Override
@@ -42,41 +53,55 @@ public class ServerHandler implements Runnable {
             battleContex.returnMain(errorMsg);
             return;
         }
-        battleContex.toggleProgressBar(false);
-        battleContex.updateInfo("Welcome to another geoBattle");
-        battleContex.setGameDisplay();
+        battleContex.setGameDisplay(Battle.GameStage.CONNECTED);
         Log.i("ServerHandler", "Connected to server successfully");
 
         try {
-            GameData m = ConnectionUtils.readServer(is);
+            sendServer(dataConnection);
+
+            GameData m = readServer();
+            battleContex.setGameDisplay(Battle.GameStage.BATTLE_STARTED);
             while (m != null) {
                 GameData.DataType type = m.getType();
                 Log.d(TAG, "run: received gameData from server" + m.toString());
                 switch (type) {
                     case QUESTION:
+                        battleContex.updateInfo("Your turn!");
                         battleContex.updateQuestion(m);
                         waitUserInput();
-                        ConnectionUtils.sendServer(os, answer);
+                        sendServer(answer);
                         break;
                     case ANSWER:
+                        battleContex.updateInfo("Rivals turn");
                         String answer = m.getContent("answer");
                         battleContex.markCorrectAnswer(answer);
                         break;
                     case UPDATE:
-                        String update = m.getContent("update");
-                        battleContex.updateScores(update);
+                        if (m.getContent("scores") !=null){
+                            String update = m.getContent("scores");
+                            battleContex.updateScores(update);
+                        }
+                        if (m.getContent("update") !=null){
+                            battleContex.updateInfo(m.getContent("update"));
+                        }
+                        if (m.getContent("settings:playersName") !=null){
+                            battleContex.setScoresDisplay(m.getContent("settings:playersName"));
+                        }
                         break;
                     case SKIP:
                         break;
                     case FIN:
                         // game has ended
-                        ConnectionUtils.sendServer(os, new GameData(GameData.DataType.FIN));
+                        GameData fin = new GameData(GameData.DataType.FIN);
+                        fin.setContent("reason" , "game finished");
+                        sendServer(fin);
+
                         // TODO - update gui that game ended
                         String summary = m.getContent("summary");
                         battleContex.returnMain("Game ended");
                         return;
                 }
-                m = ConnectionUtils.readServer(is);
+                m = readServer();
 
             }
         }catch (IOException e ){
@@ -95,15 +120,15 @@ public class ServerHandler implements Runnable {
             try {
                 Log.d(TAG, "waitUserInput: waiting for user input");
                 if (TIME_ATTACK) {
-                    int timeout = 10;
+                    timeCoefficient = 10;
                     // prepare blank answer to be sent
                     GameData blankAnswer = new GameData(GameData.DataType.ANSWER);
                     blankAnswer.setContent("answer", "-1");
                     setAnswer(blankAnswer);
-                    while (timeout > 0) {
-                        battleContex.updateInfo((timeout+1)/2 + " seconds to answer!");
-                        wait(500);
-                        timeout--;
+                    while (timeCoefficient > 0) {
+                        battleContex.updateInfo(timeCoefficient+ " seconds to answer!");
+                        wait(100);
+                        timeCoefficient = Math.round((timeCoefficient - DECREASE_FACTOR)* 10d) / 10d;
                         if (!answer.getContent("answer").equals("-1")){
                             return;
                         }
@@ -120,6 +145,7 @@ public class ServerHandler implements Runnable {
     }
 
     public void setAnswer(GameData answer) {
+        answer.setContent("timeCoeffient",String.valueOf(this.timeCoefficient));
         this.answer = answer;
     }
 
@@ -131,4 +157,19 @@ public class ServerHandler implements Runnable {
         ConnectionUtils.closeSocket(socket);
     }
 
+    private GameData readServer() throws IOException {
+        GameData m;
+        String input = ConnectionUtils.readObjectInputStream(is);
+        if (input!=null) {
+            m = ConnectionUtils.jsonToGameData(input);
+        }else{
+            throw new IOException(TAG + "readServer: Error reading response");
+        }
+        return m;
+    }
+
+    void sendServer(GameData gameData) throws IOException {
+        String s = ConnectionUtils.gameDataToJson(gameData);
+        ConnectionUtils.sendObjectOutputStream(os,s);
+    }
 }

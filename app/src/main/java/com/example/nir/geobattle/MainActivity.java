@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         bt_battle.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("=====", "onClick: battle clicked!");
-                FireIntent(Battle.class);
+                FireIntent(BattleConfig.class);
             }
         });
         bt_stats = (Button) findViewById(R.id.stats);

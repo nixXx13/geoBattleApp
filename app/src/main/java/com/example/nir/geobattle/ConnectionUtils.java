@@ -6,6 +6,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 
 import com.google.gson.Gson;
@@ -34,25 +35,32 @@ public class ConnectionUtils {
         }
     }
 
-    public static GameData readServer(ObjectInputStream is) throws IOException {
-        GameData m = null;
-        Gson gson = new Gson();
-        try {
-            String s = (String) is.readObject();
-            m = gson.fromJson(s, GameData.class);
-        } catch (ClassNotFoundException e) {
-            Log.d(TAG, "readServer: failed reading from server");
-            e.printStackTrace();
-        }
-        return m;
-
-    }
-
-    public static void sendServer(ObjectOutputStream os ,GameData data) throws IOException {
-        Gson gson = new Gson();
-        String s = gson.toJson(data);
-        Log.d(TAG, "sendServer: sending server " + data.toString());
+    static void sendObjectOutputStream(ObjectOutputStream os, String s) throws IOException {
         os.writeObject(s);
 
+        PrintStream ps = new PrintStream(os);
+        if (ps.checkError()){
+            throw new IOException("Error sending client with objectStream " + os.toString());
+        }
+    }
+
+    static String readObjectInputStream(ObjectInputStream is) throws IOException {
+        String s = null;
+        try {
+            s = (String) is.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return s;
+    }
+
+    static String gameDataToJson(GameData gameData){
+        Gson gson = new Gson();
+        return gson.toJson(gameData);
+    }
+
+    static GameData jsonToGameData(String json){
+        Gson gson = new Gson();
+        return gson.fromJson(json, GameData.class);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.nir.geobattle;
 
-import android.graphics.drawable.TransitionDrawable;
-import android.support.v4.content.ContextCompat;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -9,11 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Battle extends AppCompatActivity {
 
@@ -22,7 +21,7 @@ public class Battle extends AppCompatActivity {
     private final int NUM_BUTTONS       = 4;
     private final int NUM_EXTRAS       = 3;
     private final int NUM_PLAYERS_TOTAL = 4;
-    private final int NUM_PLAYERS       = 1;
+    private int NUM_PLAYERS;
 
     private TextView[] mPlayerScore;
     private TextView mQuestion;
@@ -32,7 +31,14 @@ public class Battle extends AppCompatActivity {
     private Button[] mExtras;
 
     private ProgressBar pbHeaderProgress;
+    private UIHandler   uiHandler;
 
+    private List<Button> LastCorrect;
+
+    public enum GameStage{
+        CONNECTED,
+        BATTLE_STARTED,
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -44,7 +50,7 @@ public class Battle extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                ConnectionUtils.sendServer(serverHandler.getOs() , new GameData(GameData.DataType.FIN));
+                                serverHandler.sendServer( new GameData(GameData.DataType.FIN));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -69,6 +75,8 @@ public class Battle extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
 
+        uiHandler = new UIHandler();
+
         mQuestion = (TextView)findViewById(R.id.tv_battle_question);
         mQuestion.setTextColor(getResources().getColor(R.color.white));
         mQuestion.setVisibility(View.INVISIBLE);
@@ -79,9 +87,11 @@ public class Battle extends AppCompatActivity {
         mButtonOpt[2] = (Button)findViewById(R.id.bt_battle_op3);
         mButtonOpt[3] = (Button)findViewById(R.id.bt_battle_op4);
 
+        LastCorrect = new ArrayList<>();
         for ( int i = 0 ; i < NUM_BUTTONS ; i++){
             mButtonOpt[i].setOnClickListener(new ButtonListener(mButtonOpt[i]));
             mButtonOpt[i].setVisibility(View.INVISIBLE);
+            LastCorrect.add(mButtonOpt[i]);
         }
 
         mExtras = new Button[NUM_EXTRAS];
@@ -116,69 +126,57 @@ public class Battle extends AppCompatActivity {
         pbHeaderProgress = (ProgressBar) findViewById(R.id.pbHeaderProgress);
         pbHeaderProgress.setVisibility(View.VISIBLE);
 
+        Intent i = getIntent();
+        String roomName         = i.getStringExtra("roomName");
+        String playerName       = i.getStringExtra("playerName");
+        String type             = i.getStringExtra("type");
+        String roomPassword     = i.getStringExtra("roomPass");
+        int roomSize            = Integer.valueOf(i.getStringExtra("roomSize"));
+
         if ( this.serverHandler == null) {
-            this.serverHandler = new ServerHandler(this);
+            this.serverHandler = new ServerHandler(this,playerName,roomName,type,roomPassword,roomSize);
             threadServerHandler = new Thread(serverHandler);
             threadServerHandler.start();
         }
     }
 
-
-    public void setGameDisplay() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mQuestion.setVisibility(View.VISIBLE);
-
-                for ( int i = 0 ; i < NUM_BUTTONS ; i++){
-                    mButtonOpt[i].setOnClickListener(new ButtonListener(mButtonOpt[i]));
-                    mButtonOpt[i].setVisibility(View.VISIBLE);
-                }
-
-                for ( int i = 0 ; i < NUM_PLAYERS ; i++){
-                    mPlayerScore[i].setVisibility(View.VISIBLE);
-                }
-
+    public void setGameDisplay(final GameStage gameStage) {
+        if (gameStage.equals(GameStage.BATTLE_STARTED)) {
+            uiHandler.setViewVisability(mQuestion,View.VISIBLE);
+            for (int i = 0; i < NUM_BUTTONS; i++) {
+                uiHandler.setViewVisability(mButtonOpt[i], View.VISIBLE);
             }
-        });
+        }
+        if (gameStage.equals(GameStage.CONNECTED)) {
+            toggleProgressBar(false);
+            updateInfo("Waiting for other players...");
+            for (int i = 0; i < NUM_BUTTONS; i++) {
+                mButtonOpt[i].setOnClickListener(new ButtonListener(mButtonOpt[i]));
+            }
+        }
     }
 
-    public void toggleProgressBar(final boolean isVisible){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (isVisible){
-                    pbHeaderProgress.setVisibility(View.VISIBLE);
-                }
-                else{
-                    pbHeaderProgress.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-    }
+    public void setScoresDisplay(final String playersName) {
 
-    public void markCorrectAnswer(final String correctAnswer){
-        for ( int i = 0 ; i < NUM_BUTTONS ; i++){
-            if (!mButtonOpt[i].getText().equals(correctAnswer)) {
-                setViewBackground(mButtonOpt[i], R.drawable.roundbuttongrayed);
-            }
+        final String[] players = playersName.split(":");
+        NUM_PLAYERS = players.length;
+
+        for (int i = 0; i < NUM_PLAYERS; i++) {
+            uiHandler.updateTextView(mPlayerScore[i],players[i] + "\n0");
+            uiHandler.setViewVisability(mPlayerScore[i], View.VISIBLE);
         }
     }
 
     public void updateInfo(String update){
-        updateTextView(mInfo,update);
+        uiHandler.updateTextView(mInfo,update);
     }
+
     public void updateScores(String update){
         String[] updateScores = update.split(" ");
-        System.out.println(updateScores);
 
         for ( int i = 0 ; i < NUM_PLAYERS ; i++){
-            updateScores[i] = "player" + i + "\n" + updateScores[i].replaceFirst("[a-zA-Z0-9]*:" , "");
-            System.out.println(updateScores[i]);
-        }
-
-        for ( int i = 0 ; i < NUM_PLAYERS ; i++){
-            updateTextView(mPlayerScore[i],updateScores[i]);
+            String updatedScore = updateScores[i].replace(":","\n");
+            uiHandler.updateTextView(mPlayerScore[i],updatedScore);
         }
 
     }
@@ -193,60 +191,45 @@ public class Battle extends AppCompatActivity {
         }
         // shuffle answers
         Collections.shuffle(pAnswer);
-        updateTextView(mQuestion, question);
+        uiHandler.updateTextView(mQuestion, question);
         for ( int i = 0 ; i < NUM_BUTTONS ; i++){
-            updateTextView(mButtonOpt[i], pAnswer.get(i));
-            setViewBackground(mButtonOpt[i],R.drawable.roundbutton);
+            uiHandler.setViewVisability(mButtonOpt[i],View.VISIBLE);
+            uiHandler.updateTextView(mButtonOpt[i], pAnswer.get(i));
+            if ( i != NUM_BUTTONS-1 ){
+                //last is correct , no need to animate
+                uiHandler.alpha(LastCorrect.get(i),0.2f,1.0f);
+            }
         }
     }
 
-    public void setViewColorTransition(final View view , final boolean reverse){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TransitionDrawable transition = (TransitionDrawable) view.getBackground();
-                if (!reverse) {
-                    transition.startTransition(500);
-                }else{
-                    transition.reverseTransition(500);
-                }
-            }
-        });
-
+    public void toggleProgressBar(final boolean setVisible){
+        int visibility = setVisible ? View.VISIBLE : View.INVISIBLE;
+        uiHandler.setViewVisability(pbHeaderProgress,visibility);
     }
 
-    public void setViewBackground(final View view ,final  int drawableId){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                view.setBackground(ContextCompat.getDrawable(getBaseContext(), drawableId));
+    public void markCorrectAnswer(final String correctAnswer){
+        int correctIndex = 0;
+        for ( int i = 0 ; i < NUM_BUTTONS ; i++){
+            if (!LastCorrect.get(i).getText().equals(correctAnswer)) {
+                uiHandler.alpha(LastCorrect.get(i),1.0f,0.2f);
             }
-        });
-    }
-
-    public void updateTextView ( final TextView tv , final String s ) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tv.setText(s);
+            else{
+               correctIndex = i;
             }
-        });
+        }
+        Button correctButton = LastCorrect.get(correctIndex);
+        LastCorrect.remove(correctIndex);
+        LastCorrect.add(correctButton);
     }
 
     public void notifyServerHandler(){
         synchronized (serverHandler) {
             serverHandler.notifyAll();
         }
-
     }
 
     public void returnMain(final String errorMsg){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
-            }
-        });
+        uiHandler.makeToast(getApplicationContext(),errorMsg);
         finish();
     }
 
@@ -259,7 +242,6 @@ public class Battle extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            // TODO - set buttom pressed color
             String answer = (String)button.getText();
             GameData answerResponse = new GameData(GameData.DataType.ANSWER);
             answerResponse.setContent("answer",answer);
@@ -267,4 +249,5 @@ public class Battle extends AppCompatActivity {
             notifyServerHandler();
         }
     }
+
 }
