@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BattleConfig"
+    android:background="@drawable/gb_game"
+    android:orientation="vertical"
+    android:layoutDirection="ltr"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+    <LinearLayout
+        android:id="@+id/scoresLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="2"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        >
+        <TextView
+            android:id="@+id/tv_pScore3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player3:\n0"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_pScore1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player1:\n0"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_pScore2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player2:\n0"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tv_pScore4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:text="player4:\n0"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <Button
+        android:id="@+id/done"
+        android:layout_marginTop="40dp"
+        android:layout_width="100sp"
+        android:layout_height="40sp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:background="@drawable/colortransition"
+        android:text="Done!"
+        android:gravity="center"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+
+        android:padding="2dp"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+
+
+</LinearLayout>

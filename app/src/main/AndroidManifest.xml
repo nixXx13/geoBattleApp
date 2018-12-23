@@ -24,8 +24,18 @@
         </activity>
         <activity
             android:name=".Battle"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".BattleConfig"></activity>
+            android:parentActivityName=".MainActivity">
+
+        </activity>
+        <activity
+            android:name=".BattleConfig"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
+        <activity android:name=".BattleSummary"
+            android:parentActivityName=".MainActivity">
+
+        </activity>
     </application>
 
 </manifest>

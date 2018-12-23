@@ -27,6 +27,7 @@ public class Battle extends AppCompatActivity {
     private TextView mQuestion;
     private TextView mInfo;
 
+    // TODO - replace buttons with obj
     private Button[] mButtonOpt;
     private Button[] mExtras;
 
@@ -143,9 +144,9 @@ public class Battle extends AppCompatActivity {
     public void setGameDisplay(final GameStage gameStage) {
         if (gameStage.equals(GameStage.BATTLE_STARTED)) {
             uiHandler.setViewVisability(mQuestion,View.VISIBLE);
-            for (int i = 0; i < NUM_BUTTONS; i++) {
-                uiHandler.setViewVisability(mButtonOpt[i], View.VISIBLE);
-            }
+//            for (int i = 0; i < NUM_BUTTONS; i++) {
+//                uiHandler.setViewVisability(mButtonOpt[i], View.VISIBLE);
+//            }
         }
         if (gameStage.equals(GameStage.CONNECTED)) {
             toggleProgressBar(false);
@@ -183,7 +184,7 @@ public class Battle extends AppCompatActivity {
 
     public void updateQuestion (GameData questionGameData){
 
-        final String question = "What will be the question here? will it be very long? " + questionGameData.getContent("question");
+        final String question = questionGameData.getContent("question");
 
         ArrayList<String> pAnswer = new ArrayList<String>();
         for (int i = 0; i < NUM_BUTTONS; i++) {
@@ -231,6 +232,12 @@ public class Battle extends AppCompatActivity {
     public void returnMain(final String errorMsg){
         uiHandler.makeToast(getApplicationContext(),errorMsg);
         finish();
+    }
+
+    public void fireSummaryIntent(String summary){
+        Intent i = new Intent(this , BattleSummary.class);
+        i.putExtra("playersScore",summary);
+        startActivity(i);
     }
 
     private class ButtonListener implements View.OnClickListener {

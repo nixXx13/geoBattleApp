@@ -7,6 +7,8 @@
     tools:context=".BattleConfig"
     android:background="@drawable/gb_conf"
     android:orientation="vertical"
+    android:layoutDirection="ltr"
+
     >
 
     <TextView
@@ -107,6 +109,7 @@
             android:paddingRight="15dp"
             android:text="Room password"
             android:textColor="#FFFFFF"
+            android:visibility="invisible"
             android:textSize="16sp" />
 
         <EditText
