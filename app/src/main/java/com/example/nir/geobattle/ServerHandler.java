@@ -98,7 +98,7 @@ public class ServerHandler implements Runnable {
 
                         // TODO - update gui that game ended
                         String summary = m.getContent("summary");
-                        battleContex.returnMain("Game ended");
+                        battleContex.fireSummaryIntent(summary);
                         return;
                 }
                 m = readServer();

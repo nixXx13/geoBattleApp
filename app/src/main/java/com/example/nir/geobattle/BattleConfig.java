@@ -6,12 +6,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.io.IOException;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BattleConfig extends AppCompatActivity {
 
@@ -34,6 +38,15 @@ public class BattleConfig extends AppCompatActivity {
     private final int NUM_ROOM_SIZE_BUTTONS = 3;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+        }
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle_config);
@@ -41,7 +54,7 @@ public class BattleConfig extends AppCompatActivity {
         uiHandler = new UIHandler();
 
         type        = "join";
-        roomSize    = 1; //TODO set to 2
+        roomSize    = 2;
         tvRoomSize = (TextView)findViewById(R.id.tv_room_size);
 
         buttoRoomSize = new Button[3];
@@ -78,10 +91,11 @@ public class BattleConfig extends AppCompatActivity {
         editTextRoomName.setText("default_room");
 
         editTextPlayerName  = (EditText)findViewById(R.id.et_player_name);
-        editTextPlayerName.setText("Ploni");
+        editTextPlayerName.setText("Ploni_" + ThreadLocalRandom.current().nextInt(0, 1000));
 
         editTextRoomPass    = (EditText)findViewById(R.id.et_room_pass);
         editTextRoomPass.setText("");
+        uiHandler.setViewVisability(editTextRoomPass,View.INVISIBLE);
 
 
     }
